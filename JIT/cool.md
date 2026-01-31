@@ -18,6 +18,8 @@ A sima `**BOLD**` helyett használd a GitHub új figyelmeztető blokkjait. Nagyo
 
 > [!CAUTION]
 > Soha ne használd ezt a technikát idegen processzen engedély nélkül!
+```
+
 
 ```diff
   // Eredeti memóriatartalom
@@ -25,7 +27,6 @@ A sima `**BOLD**` helyett használd a GitHub új figyelmeztető blokkjait. Nagyo
   // Patchelt tartalom (MOV EAX, 1337; RET)
 + B8 37 13 00 00 C3
 ```
-
 
 **Eredmény:** A `-` sorok piros háttérrel, a `+` sorok zöld háttérrel jelennek meg. Nagyon látványos hex dumpok összehasonlítására!
 
@@ -38,8 +39,8 @@ Mivel a hex dumpok vagy a hosszú logok zavaróak lehetnek, rejtsd el őket egy 
 ```markdown
 <details>
 <summary><b>Kattints ide a teljes Hex Dump megtekintéséhez</b></summary>
-
 Nyomj <kbd>F5</kbd>-öt a Debug indításához, vagy használd a <kbd>Ctrl</kbd> + <kbd>C</kbd> kombinációt.
+```
 
 
 
