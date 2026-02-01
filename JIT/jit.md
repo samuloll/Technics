@@ -4,13 +4,13 @@
 ![Status](https://img.shields.io/badge/Status-PoC%20Working-brightgreen)
 
 > [!CAUTION]
-> Only use this on a System, you have persmission
-> This is for educational purposes only
+> Only use this on a system where you have permission.
+> This is for educational purposes only.
 
 ```csharp
 using System;
 ```
-* allows you to reference fundamental classses found in the root System Class
+* allows you to reference fundamental classes found in the root System Class
     * eg. System.Console
 ```csharp
 using System.Runtime.InteropServices;
@@ -20,23 +20,23 @@ using System.Runtime.InteropServices;
 ```csharp
 using System.Runtime.CompilerServices;
 ```
-* Essential for for how the .NET Runtime (CLR) handles the execution and compilation of your code
+* Essential for how the .NET Runtime (CLR) handles the execution and compilation of your code
 ```csharp
 [DllImport("kernel32.dll")]
 ```
 * Gateway to Windows OS
 * Core memory manager of Windows
-* Standard C# does not have 'Change Memory Permissions' command, thus by using this we have control of that
+* Standard C# does not have 'Change Memory Permissions' command; thus, by using this we have control of that
 
 ```csharp
 [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
 ```
-* By default the compiler wants to make the code faster, so it might change it. But we dont want that so
+* By default the compiler wants to make the code faster, so it might change it. But we don't want that so
     * MethodImplOptions.NoInlining
-        * If the function is simple the compiler might think, that this doesnt needs it's own addres, and store it in Main
+        * If the function is simple the compiler might think, that this doesn't need its own address, and store it in Main
         * With this we say, do not copy it into Main
     * MethodImplOptions.NoOptimization
-        * The compiler might think that this function not important, and change it for something simpler which does the same, but faster
+        * The compiler might think that this function is not important, and change it to  something simpler that does the same, but faster
         * We tell not to do
 
 ### Functions of kernel32.dll used here
@@ -50,11 +50,11 @@ using System.Runtime.CompilerServices;
     * Tells the program to import the body of the function from kernel32
 *  IntPtr lpAddress
     * IntPtr
-        * platform dependent memory adress integer
-    * Long Pointer To Address
+        * platform dependent memory address integer
+    * Long Pointer To address
         * The starting point of the memory the function wants to change
 * UIntPtr dwSize
-    * The size of the region which protection we want to change
+    * The size of the region whose protection we want to change
     * dwSize
        * Double Word Size
     * UintPtr
@@ -62,20 +62,20 @@ using System.Runtime.CompilerServices;
 * uint flNewProtect
     * flNewProtect
         * Flags For New Protection
-    * Memory constans that we want to apply
+    * Memory constants that we want to apply
 <details>
-<summary><b>Press to see the Memory Constans</b></summary>
+<summary><b>Press to see the Memory Constants</b></summary>
 
  Name | Value | Description | 
 | :--- | :--- | :---: | 
-| `PAGE_NOACCESS` | `0x01` | <b>The Void</b>: attempts to read or write or execute will cause an immediate Acces Vialiton crash| 
+| `PAGE_NOACCESS` | `0x01` | <b>The Void</b>: attempts to read or write or execute will cause an immediate Access Violation crash| 
 | `PAGE_READONLY` | `0x02` | You can only read data |
 |`PAGE_READWRITE`|`0x04` | <b>Standard data</b>: Used for variables, heap and stack (Prevents buffer OverFlow exploits via DEP/NX bit)
 |`PAGE_WRITECOPY`|`0x08` | Allows reading, and if you write, the OS gives you a private copy of the page, so you dont affect other processes sharing it|  
 |`PAGE_EXECUTE`|`0x10` | You can only execute nor read or write. Used in rare cases|
 |`PAGE_EXECUTE_READ`|`0x20` | You can read and execute. Default for .text sections(compiled code)|  
-|`PAGE_EXECUTE_READWRITE`|`0x40` | Highly suspicious for AT-s, because legitimate programs rarely need this|  
-|`PAGE_EXECUTE_WRITECOPY`|`0x40` |Creates a private executable copy when writing |
+|`PAGE_EXECUTE_READWRITE`|`0x40` | Highly suspicious for AVs/EDRs, because legitimate programs rarely need this|  
+|`PAGE_EXECUTE_WRITECOPY`|`0x80` |Creates a private executable copy when writing |
 |`PAGE_GUARD`|`0x100` | The first time the memory is accessed, the OS raises a generic "Guard Page" exception, then removes this flag. Used for growing the stack automatically |
 |`PAGE_NOCACHE`|`0x200` |Hardware Direct. Disables CPU caching for this page. Forces the CPU to read/write directly to RAM |
 |`PAGE_WRITECOMBINE`|`0x400` |Driver Optimization. Allows writes to be combined/buffered. Mainly for device drivers and video memory|
@@ -94,8 +94,8 @@ using System.Runtime.CompilerServices;
     * out
         * Tells C# to pass a pointer to this variable, allowing the external function to write a value back into it.
 #### FlushInstructionCache
-* Modern CPU's have a cache (L1/L2) to speed up code execution. If you change the memory in the RAM, the program might still execute the code located in the cache
-* With this we wipe out the cache content, and forcing to use the new one
+* Modern CPUs have a cache (L1/L2) to speed up code execution. If you change the memory in the RAM, the program might still execute the code located in the cache
+* With this we wipe out the cache content, and forcing it to use the new one
 ```csharp
 public static extern bool FlushInstructionCache(IntPtr hProcess, IntPtr lpBaseAddress, UIntPtr dwSize);
 ```
@@ -110,9 +110,9 @@ public static extern bool FlushInstructionCache(IntPtr hProcess, IntPtr lpBaseAd
 * Gets the handle for your currently running program so FlushInstructionCache knows which program's cache to clear
 
 ### RunExploit Function
-* We run SecureFunction once, so JIT compling happens
+* We run SecureFunction once, so JIT compiling happens
 ```csharp
- var methodInfo = typeof(MemoryHack).GetMethod("SecureFunction");
+ var methodInfo = typeof(PoC).GetMethod("SecureFunction");
 ```
 * Gets the information about this function
 ```csharp
@@ -121,7 +121,7 @@ RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
 * Force the CLR (Common Language Runtime) to run the JIT (Just-In-Time) compiler on that specific method immediately, ensuring that the stable, native machine code exists in memory before we try to touch it.
     * It allocates a permanent spot in executable memory for this code.
     * It fixes all internal pointers to point to this final address.
-#### What happens if we dont run this
+#### What happens if we don't run this
 * When you write C# code, it compiles into IL (Intermediate Language), not machine code. When you run the program, the method SecureFunction doesn't actually exist in RAM as executable assembly instructions yet. It only exists as abstract IL data.
 * If you try to get the memory address of a method that hasn't been JIT-compiled, one of two things happens
     * You get a null pointer or an error.
@@ -149,14 +149,14 @@ byte b2 = Marshal.ReadByte(funcAddr + 1);
 ```csharp
 VirtualProtect(funcAddr, (UIntPtr)payload.Length, PAGE_EXECUTE_READWRITE, out oldProtect)
 ```
-* Now as we have the function adress, we change the permission so we can write our payload.
+* Now as we have the function address, we change the permission so we can write our payload.
 
 ```csharp
 byte[] payload = { 0xB8, 0x37, 0x13, 0x00, 0x00, 0xC3 };
 ```
 * `0xB8`
     * mov EAX, int32
-        * when a function return with an int it uses always EAX, as a container
+        * when a function returns an int. it always uses EAX, as a container
     * we provide the int as 0x37, 0x13, 0x00, 0x00
         * Little Endian
 * `0xC3`
@@ -165,12 +165,12 @@ byte[] payload = { 0xB8, 0x37, 0x13, 0x00, 0x00, 0xC3 };
  Marshal.Copy(payload, 0, funcAddr, payload.Length);
 ```
 * Copies the payload content, starting from the start of the payload array (0)
-* Few function can modiffy memory in .NET, and Marshal is one of them
+* Few functions can modify memory in .NET, and Marshal is one of them
 
 ```csharp
   VirtualProtect(funcAddr, (UIntPtr)payload.Length, oldProtect, out _);
 ```
 
-* At the end we set back the old permission, because we are ethical hackers.
+* At the end we set back the old permission, because we are ethical researchers.
 
 
