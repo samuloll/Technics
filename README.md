@@ -1,2 +1,2 @@
-# Technics
-Im doing a research of known bypassing technices used by malware developers
+# Techniques
+Im doing a research of known bypassing techniques used by malware developers
