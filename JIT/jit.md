@@ -80,7 +80,7 @@ using System.Runtime.CompilerServices;
 |`PAGE_NOCACHE`|`0x200` |Hardware Direct. Disables CPU caching for this page. Forces the CPU to read/write directly to RAM |
 |`PAGE_WRITECOMBINE`|`0x400` |Driver Optimization. Allows writes to be combined/buffered. Mainly for device drivers and video memory|
 
->[!NOTE]
+> [!NOTE]
 > DEP/NX bit
 >> NX (No-Execute): This is the Hardware implementation. It is a specific bit (literally a 0 or 1 switch) inside the CPU's memory management unit.
 >> AMD calls it NX. Intel calls it XD (Execute Disable). They do the exact same thing.
